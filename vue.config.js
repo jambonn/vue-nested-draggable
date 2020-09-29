@@ -6,6 +6,7 @@ module.exports = {
       title: 'Vue draggable tree view component',
     },
   },
+  publicPath: '.',
   configureWebpack: {
     devtool: 'source-map',
     output: {

@@ -77,6 +77,7 @@ export default {
           return 'skip children'
         }
         if (!childNode._vm) {
+          // eslint-disable-next-line
           console.log(childNode)
         }
         this.$set(

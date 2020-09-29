@@ -23,6 +23,9 @@
   "browser": "dist/vue-nested-draggable.esm.js",
   "module": "dist/vue-nested-draggable.esm.js",
   "unpkg": "dist/vue-nested-draggable.min.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
