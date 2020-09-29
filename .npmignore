@@ -13,6 +13,4 @@ yarn-error.log
 .idea
 .vscode
 .editorconfig
-dist/demo.html
-dist/bit
 src/

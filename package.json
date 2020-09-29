@@ -19,40 +19,54 @@
     "type": "git",
     "url": "git+https://github.com/jambonn/vue-nested-draggable.git"
   },
-  "main": "dist/vue-nested-draggable.common.js",
+  "main": "dist/vue-nested-draggable.ssr.js",
+  "browser": "dist/vue-nested-draggable.esm.js",
+  "module": "dist/vue-nested-draggable.esm.js",
   "unpkg": "dist/vue-nested-draggable.min.js",
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "run-s build:*",
-    "build:lib": "vue-cli-service build --target lib --name vue-nested-draggable ./src/components/DraggableTree.vue",
-    "build:wc": "vue-cli-service build --target wc --name vue-nested-draggable ./src/lib-entry.js",
+    "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
+    "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
+    "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
+    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
     "publish:demo": "vue-cli-service build --dest gh-pages && gh-pages -d gh-pages",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "draggable-helper": "1.0.20",
     "helper-js": "^2.0.1",
-    "tree-helper": "^1.4.14",
-    "vue-functions": "^2.0.6"
+    "tree-helper": "^1.4.14"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.9.5",
+    "@rollup/plugin-alias": "^2.2.0",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-replace": "^2.3.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
+    "cross-env": "^7.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^6.2.2",
     "gh-pages": "^3.1.0",
-    "npm-run-all": "^4.1.5",
+    "minimist": "^1.2.5",
     "prettier": "^2.1.2",
+    "rollup": "^2.7.3",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-vue": "^5.1.6",
     "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.11"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "peerDependencies": {
+    "vue": "^2.6.11"
+  },
+  "engines": {
+    "node": ">=10"
+  }
 }

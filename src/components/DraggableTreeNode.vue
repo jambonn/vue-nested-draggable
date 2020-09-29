@@ -7,7 +7,7 @@ import autoMoveDragPlaceHolder, {
   isNodeDraggable,
   isNodeDroppable,
 } from '@/helpers/autoMoveDragPlaceHolder'
-import * as vf from 'vue-functions'
+import { isPropTrue } from '@/plugins/utils'
 
 export default {
   extends: TreeNode,
@@ -22,12 +22,12 @@ export default {
     this.$watch(
       'store.draggable',
       draggable => {
-        if (vf.isPropTrue(draggable)) {
+        if (isPropTrue(draggable)) {
           const triggerEl = this.store.getTriggerEl
             ? this.store.getTriggerEl(this)
             : this.$el.querySelector('.tree-node-inner')
           this._draggableDestroy = draggableHelper(triggerEl, {
-            preventSelect: vf.isPropTrue(this.store.preventSelect),
+            preventSelect: isPropTrue(this.store.preventSelect),
             // trigger el
             getEl: () => this.$el,
             minTranslate: 10,

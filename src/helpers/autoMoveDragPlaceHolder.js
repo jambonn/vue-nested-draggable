@@ -1,7 +1,7 @@
 import * as hp from 'helper-js'
 import * as th from 'tree-helper'
-import Cache, { attachCache } from '../plugins/cache'
-import * as vf from 'vue-functions'
+import Cache, { attachCache } from '@/plugins/cache'
+import { isPropTrue } from '@/plugins/utils'
 import getTreeByPoint from './temporarilyFixOverlappingTreeIssue'
 
 // Actions for drag placeholder
@@ -224,14 +224,14 @@ export default function autoMoveDragPlaceHolder(draggableHelperInfo) {
         }
         if (prevTree !== currentTree) {
           if (
-            !vf.isPropTrue(dragStartTree.crossTree) ||
-            !vf.isPropTrue(currentTree.crossTree)
+            !isPropTrue(dragStartTree.crossTree) ||
+            !isPropTrue(currentTree.crossTree)
           ) {
             return
           }
           prevTree = currentTree
         }
-        if (!vf.isPropTrue(currentTree.droppable)) {
+        if (!isPropTrue(currentTree.droppable)) {
           return
         }
         return currentTree
