@@ -36,7 +36,7 @@ const baseConfig = {
       'process.env.ES_BUILD': JSON.stringify('false'),
     },
     vue: {
-      css: true,
+      css: false, // Vue SSR not support addStyle throw error "document is not defined"
       template: {
         isProduction: true,
       },
