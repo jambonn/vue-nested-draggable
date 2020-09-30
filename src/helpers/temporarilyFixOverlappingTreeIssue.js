@@ -1,4 +1,4 @@
-import * as hp from 'helper-js'
+import { hasClass } from '@/plugins/utils'
 
 // document.elementsFromPoint Polyfill
 // from https://gist.github.com/iddan/54d5d9e58311b0495a91bf06de661380
@@ -31,12 +31,12 @@ export default function getTreeByPoint(x, y, trees) {
   const betweenEls = []
   for (const el of els) {
     if (!nodeEl) {
-      if (hp.hasClass(el, 'tree-node')) {
+      if (hasClass(el, 'tree-node')) {
         nodeEl = el
       }
     } else {
       // console.log(el);
-      if (hp.hasClass(el, 'tree')) {
+      if (hasClass(el, 'tree')) {
         treeEl = el
         break
       }

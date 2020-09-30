@@ -220,6 +220,58 @@ node.parent._vm // parent node vm
 node._vm.store
 ```
 
+#### Node max level
+```template
+<draggable-tree :data="data" draggable="draggable" crosstree="crossTree" @drag="ondrag">
+    <div slot-scope="{data, store, vm}">
+        <template v-if="!data.isDragPlaceHolder">
+            <b v-if="data.children &amp;&amp; data.children.length" @click="store.toggleOpen(data)">
+                {{data.open ? &apos;-&apos; : &apos;+&apos;}}&nbsp;
+            </b>
+            <span>{{data.text}}</span>
+        </template>
+    </div>
+</tree>
+```
+``` js
+import { DraggableTree, depthFirstSearch } from '@jambonn/vue-nested-draggable';
+
+export default {
+  ...
+    components: {
+        DraggableTree
+    },
+    methods: {
+        ondrag(node) {
+          const maxLevel = 2
+          let nodeLevels = 1
+          depthFirstSearch(node, childNode => {
+            if (childNode._vm.level > nodeLevels) {
+              nodeLevels = childNode._vm.level
+            }
+          })
+          nodeLevels = nodeLevels - node._vm.level + 1
+          const childNodeMaxLevel = maxLevel - nodeLevels
+          depthFirstSearch(this.originalData, childNode => {
+            if (childNode === node) {
+              return 'skip children'
+            }
+            if (!childNode._vm) {
+              console.log(childNode)
+            }
+            this.$set(
+              childNode,
+              'droppable',
+              childNode._vm.level <= childNodeMaxLevel,
+            )
+          })
+        },
+    },
+  ...
+};
+```
+
+
 # Other
 
 ### Demo css

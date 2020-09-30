@@ -1,5 +1,12 @@
-import * as hp from 'helper-js'
-import * as th from 'tree-helper'
+import {
+  getOffset,
+  binarySearch,
+  hasClass,
+  insertBefore,
+  insertAfter,
+  appendTo,
+  prependTo,
+} from '@/plugins/utils'
 import Cache, { attachCache } from '@/plugins/cache'
 import { isPropTrue } from '@/plugins/utils'
 import getTreeByPoint from './temporarilyFixOverlappingTreeIssue'
@@ -12,14 +19,14 @@ const targets = {
   },
   before: info => {
     if (isNodeDroppable(info.targetNode.parent)) {
-      th.insertBefore(info.dplh, info.targetNode)
+      insertBefore(info.dplh, info.targetNode)
     } else {
       insertDplhAfterTo(info.dplh, info.targetNode.parent, info)
     }
   },
   append: info => {
     if (isNodeDroppable(info.targetNode)) {
-      th.appendTo(info.dplh, info.targetNode)
+      appendTo(info.dplh, info.targetNode)
       if (!info.targetNode.open) info.store.toggleOpen(info.targetNode)
     } else {
       insertDplhAfterTo(info.dplh, info.targetNode, info)
@@ -27,7 +34,7 @@ const targets = {
   },
   prepend: info => {
     if (isNodeDroppable(info.targetNode)) {
-      th.prependTo(info.dplh, info.targetNode)
+      prependTo(info.dplh, info.targetNode)
       if (!info.targetNode.open) info.store.toggleOpen(info.targetNode)
     } else {
       insertDplhAfterTo(info.dplh, info.targetNode, info)
@@ -39,7 +46,7 @@ const targets = {
   // append to prev sibling
   'append prev': info => {
     if (isNodeDroppable(info.targetPrev)) {
-      th.appendTo(info.dplh, info.targetPrev)
+      appendTo(info.dplh, info.targetPrev)
       if (!info.targetPrev.open) info.store.toggleOpen(info.targetPrev)
     } else {
       insertDplhAfterTo(info.dplh, info.targetPrev, info)
@@ -48,7 +55,7 @@ const targets = {
   // append to current tree
   'append current tree': info => {
     if (isNodeDroppable(info.currentTree.rootData)) {
-      th.appendTo(info.dplh, info.currentTree.rootData)
+      appendTo(info.dplh, info.currentTree.rootData)
     }
   },
 }
@@ -62,7 +69,7 @@ function insertDplhAfterTo(dplh, targetNode) {
       node => node.parent && isNodeDroppable(node.parent),
     )
     if (closest) {
-      th.insertAfter(dplh, closest)
+      insertAfter(dplh, closest)
     } else {
       return false
     }
@@ -196,7 +203,7 @@ export default function autoMoveDragPlaceHolder(draggableHelperInfo) {
       return this.el.querySelector('.tree-node-inner')
     },
     offset() {
-      return hp.getOffset(this.nodeInnerEl)
+      return getOffset(this.nodeInnerEl)
     }, // left top point
     offset2() {
       return {
@@ -290,11 +297,11 @@ export default function autoMoveDragPlaceHolder(draggableHelperInfo) {
         if (children.length === 0) {
           break
         }
-        const t = hp.binarySearch(
+        const t = binarySearch(
           children,
           node => {
             const el = document.getElementById(node._id)
-            const ty = hp.getOffset(el).y
+            const ty = getOffset(el).y
             const ty2 = ty + el.offsetHeight + currentTree.space
             if (ty2 < y) {
               return -1
@@ -342,7 +349,7 @@ export default function autoMoveDragPlaceHolder(draggableHelperInfo) {
       return this.targetNodeEl.querySelector('.tree-node-inner')
     },
     tiOffset() {
-      return hp.getOffset(this.tiInnerEl)
+      return getOffset(this.tiInnerEl)
     },
     tiOf4() {
       return getOf4(this.tiInnerEl, this.currentTree.space)
@@ -353,7 +360,7 @@ export default function autoMoveDragPlaceHolder(draggableHelperInfo) {
     //
     targetPrevEl() {
       let r = this.targetNodeEl.previousSibling
-      if (hp.hasClass(r, 'dragging')) {
+      if (hasClass(r, 'dragging')) {
         r = r.previousSibling
       }
       return r
@@ -639,7 +646,7 @@ export default function autoMoveDragPlaceHolder(draggableHelperInfo) {
 }
 
 function getOf4(el, space) {
-  const r = hp.getOffset(el)
+  const r = getOffset(el)
   r.x2 = r.x + el.offsetWidth
   r.y2 = r.y + el.offsetHeight + space
   return r

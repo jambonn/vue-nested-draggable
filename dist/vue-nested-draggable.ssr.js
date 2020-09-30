@@ -1,4 +1,20 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var hp=require('helper-js'),th=require('tree-helper'),draggableHelper=require('draggable-helper');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var draggableHelper__default=/*#__PURE__*/_interopDefaultLegacy(draggableHelper);function _classCallCheck(instance, Constructor) {
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var draggableHelper=require('draggable-helper');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var draggableHelper__default=/*#__PURE__*/_interopDefaultLegacy(draggableHelper);function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
@@ -146,6 +162,443 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       }
     }
   };
+}function isPropTrue(v) {
+  return v || v === '';
+} //====== Helper-js ====//
+
+/**
+ * Remove item from array. return removed count
+ * @param arr
+ * @param v
+ * @returns {number}
+ */
+
+function arrayRemove(arr, v) {
+  var index;
+  var count = 0;
+
+  while ((index = arr.indexOf(v)) > -1) {
+    arr.splice(index, 1);
+    count++;
+  }
+
+  return count;
+}
+/**
+ * Rand item in array
+ * @param arr
+ * @returns {*}
+ */
+
+function randChoice(arr) {
+  return arr[randInt(0, arr.length - 1)];
+}
+/**
+ * Rand int in range, including min and max
+ * @param min
+ * @param max
+ * @returns {number}
+ */
+
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+/**
+ * Generate random string
+ * @returns {string}
+ */
+
+
+function randString() {
+  var len = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 8;
+  var seeds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var r = '';
+
+  for (var i = 0; i < len; i++) {
+    r += randChoice(seeds);
+  }
+
+  return r;
+}
+/**
+ * http://www.51xuediannao.com/javascript/getBoundingClientRect.html
+ * @param el
+ * @returns {{top: number, left: number, bottom: number, width: (number), x: number, y: number, right: number, height: (number)}}
+ */
+
+function getBoundingClientRect(el) {
+  var xy = el.getBoundingClientRect();
+  var top = xy.top - document.documentElement.clientTop,
+      bottom = xy.bottom,
+      left = xy.left - document.documentElement.clientLeft,
+      right = xy.right,
+      width = xy.width || right - left,
+      height = xy.height || bottom - top;
+  return {
+    top: top,
+    right: right,
+    bottom: bottom,
+    left: left,
+    width: width,
+    height: height,
+    x: left,
+    y: top
+  };
+}
+/**
+ * refer: https://stackoverflow.com/questions/871399/cross-browser-method-for-detecting-the-scrolltop-of-the-browser-window
+ * @returns {{top: number, left: number}}
+ */
+
+
+function getScroll() {
+  if (typeof pageYOffset != 'undefined') {
+    //most browsers except IE before #9
+    return {
+      top: pageYOffset,
+      left: pageXOffset
+    };
+  } else {
+    var B = document.body; //IE 'quirks'
+
+    var D = document.documentElement; //IE with doctype
+
+    D = D.clientHeight ? D : B;
+    return {
+      top: D.scrollTop,
+      left: D.scrollLeft
+    };
+  }
+}
+/**
+ * refer: https://gist.github.com/aderaaij/89547e34617b95ac29d1
+ * @param el
+ * @returns {{x: number, y: number}}
+ */
+
+
+function getOffset(el) {
+  var rect = getBoundingClientRect(el);
+  var scroll = getScroll();
+  return {
+    x: rect.left + scroll.left,
+    y: rect.top + scroll.top
+  };
+}
+function binarySearch(arr, callback) {
+  var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  opt = Object.assign({
+    start: 0,
+    end: arr.length - 1,
+    maxTimes: 1000
+  }, opt);
+  var _opt = opt,
+      start = _opt.start,
+      end = _opt.end;
+  var _opt2 = opt,
+      returnNearestIfNoHit = _opt2.returnNearestIfNoHit,
+      maxTimes = _opt2.maxTimes;
+  var midNum;
+  var mid;
+
+  if (start == null) {
+    start = 0;
+    end = arr.length - 1;
+  }
+
+  var i = 0;
+  var r;
+
+  while (start >= 0 && start <= end) {
+    if (i >= maxTimes) {
+      throw Error('binarySearch: loop times is over '.concat(maxTimes, ', you can increase the limit.'));
+    }
+
+    midNum = Math.floor((end - start) / 2 + start);
+    mid = arr[midNum];
+    r = callback(mid, i);
+
+    if (r > 0) {
+      end = midNum - 1;
+    } else if (r < 0) {
+      start = midNum + 1;
+    } else {
+      return {
+        index: midNum,
+        value: mid,
+        count: i + 1,
+        hit: true
+      };
+    }
+
+    i++;
+  }
+
+  return returnNearestIfNoHit ? {
+    index: midNum,
+    value: mid,
+    count: i + 1,
+    hit: false,
+    greater: r > 0
+  } : null;
+}
+/**
+ * source: http://youmightnotneedjquery.com/
+ * @param el
+ * @param className
+ * @returns {boolean}
+ */
+
+function hasClass(el, className) {
+  if (el.classList) {
+    return el.classList.contains(className);
+  } else {
+    return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+  }
+} //===== Tree helper =====//
+
+function _changeParent(item, parent) {
+  var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+  var parentKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'parent'; // remove item from original list
+
+  if (item[parentKey]) {
+    arrayRemove(item[parentKey][childrenKey], item);
+  }
+
+  item[parentKey] = parent;
+}
+
+function insertBefore(item, target) {
+  var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+  var parentKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'parent';
+
+  if (item === target) {
+    return;
+  }
+
+  var siblings = target[parentKey][childrenKey];
+  var index = siblings.indexOf(target);
+
+  if (siblings[index - 1] !== item) {
+    if (item[parentKey] === target[parentKey]) {
+      arrayRemove(siblings, item);
+      index = siblings.indexOf(target);
+    } else {
+      _changeParent(item, target[parentKey]);
+    }
+
+    siblings.splice(index, 0, item);
+  }
+}
+function insertAfter(item, target) {
+  var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+  var parentKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'parent';
+
+  if (item === target) {
+    return;
+  }
+
+  var targetParent = target[parentKey];
+  var siblings = targetParent[childrenKey];
+  var index = siblings.indexOf(target);
+
+  if (siblings[index + 1] !== item) {
+    if (item[parentKey] === target[parentKey]) {
+      arrayRemove(siblings, item);
+      index = siblings.indexOf(target);
+    } else {
+      _changeParent(item, target[parentKey]);
+    }
+
+    siblings.splice(index + 1, 0, item);
+  }
+}
+function prependTo(item, target) {
+  var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+
+  if (item === target) {
+    throw "can't prepend to self";
+  }
+
+  var targetChildren = target[childrenKey];
+
+  if (targetChildren[0] !== item) {
+    _changeParent(item, target);
+
+    targetChildren.splice(0, 0, item);
+  }
+}
+function appendTo(item, target) {
+  var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+
+  if (item === target) {
+    throw "can't append to self";
+  }
+
+  var targetChildren = target[childrenKey];
+  var targetChildrenLast = targetChildren[targetChildren.length - 1];
+
+  if (targetChildrenLast !== item) {
+    _changeParent(item, target);
+
+    targetChildren.push(item);
+  }
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError('Invalid attempt to spread non-iterable instance');
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === '[object Arguments]') return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    var arr2;
+
+    for (var i = 0, _arr = new Array(arr.length); i < arr.length; i++) {
+      _arr[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+
+function _typeof$1(obj) {
+  if (typeof Symbol === 'function' && _typeof(Symbol.iterator) === 'symbol') {
+    _typeof$1 = function _typeof$1(obj) {
+      return _typeof(obj);
+    };
+  } else {
+    _typeof$1 = function _typeof$1(obj) {
+      return obj && typeof Symbol === 'function' && obj.constructor === Symbol && obj !== Symbol.prototype ? 'symbol' : _typeof(obj);
+    };
+  }
+
+  return _typeof$1(obj);
+}
+
+function isArray(v) {
+  return Object.prototype.toString.call(v) === '[object Array]';
+}
+
+function breadthFirstSearch(obj, handler) {
+  var reverse = arguments.length > 3 ? arguments[3] : undefined;
+  var rootChildren = isArray(obj) ? obj : [obj]; //
+
+  var stack = rootChildren.map(function (v, i) {
+    return {
+      item: v,
+      index: i
+    };
+  });
+
+  if (reverse) {
+    stack.reverse();
+  }
+
+  var _loop = function _loop() {
+    var _stack$shift = stack.shift(),
+        item = _stack$shift.item,
+        index = _stack$shift.index,
+        parent = _stack$shift.parent;
+
+    var r = handler(item, index, parent);
+
+    if (r === false) {
+      // stop
+      return {
+        v: void 0
+      };
+    } else if (r === 'skip children') {
+      return 'continue';
+    } else if (r === 'skip siblings') {
+      stack = stack.filter(function (v) {
+        return v.parent !== parent;
+      });
+    }
+
+    if (item.children) {
+      var _stack;
+
+      var children = item.children;
+
+      if (reverse) {
+        children = children.slice();
+        children.reverse();
+      }
+
+      var pushStack = children.map(function (v, i) {
+        return {
+          item: v,
+          index: i,
+          parent: item
+        };
+      });
+
+      (_stack = stack).push.apply(_stack, _toConsumableArray(pushStack));
+    }
+  };
+
+  while (stack.length) {
+    var _ret = _loop();
+
+    switch (_ret) {
+      case 'continue':
+        continue;
+
+      default:
+        if (_typeof$1(_ret) === 'object') return _ret.v;
+    }
+  }
+}
+function depthFirstSearch(obj, handler) {
+  var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+  var reverse = arguments.length > 3 ? arguments[3] : undefined;
+  var rootChildren = isArray(obj) ? obj : [obj]; //
+
+  var StopException = function StopException() {};
+
+  var func = function func(children, parent) {
+    if (reverse) {
+      children = children.slice();
+      children.reverse();
+    }
+
+    var len = children.length;
+
+    for (var i = 0; i < len; i++) {
+      var item = children[i];
+      var r = handler(item, i, parent);
+
+      if (r === false) {
+        // stop
+        throw new StopException();
+      } else if (r === 'skip children') {
+        continue;
+      } else if (r === 'skip siblings') {
+        break;
+      }
+
+      if (item[childrenKey] != null) {
+        func(item[childrenKey], item);
+      }
+    }
+  };
+
+  try {
+    func(rootChildren);
+  } catch (e) {
+    if (e instanceof StopException) ; else {
+      throw e;
+    }
+  }
 }//
 //
 //
@@ -543,8 +996,6 @@ function attachCache(obj, cache, toCache) {
   for (var key in toCache) {
     _loop(key);
   }
-}function isPropTrue(v) {
-  return v || v === '';
 }// from https://gist.github.com/iddan/54d5d9e58311b0495a91bf06de661380
 
 if (!document.elementsFromPoint) {
@@ -585,12 +1036,12 @@ function getTreeByPoint(x, y, trees) {
       var _el = _step.value;
 
       if (!nodeEl) {
-        if (hp.hasClass(_el, 'tree-node')) {
+        if (hasClass(_el, 'tree-node')) {
           nodeEl = _el;
         }
       } else {
         // console.log(el);
-        if (hp.hasClass(_el, 'tree')) {
+        if (hasClass(_el, 'tree')) {
           treeEl = _el;
           break;
         }
@@ -655,14 +1106,14 @@ function isParent(child, parent) {
   },
   before: function before(info) {
     if (isNodeDroppable(info.targetNode.parent)) {
-      th.insertBefore(info.dplh, info.targetNode);
+      insertBefore(info.dplh, info.targetNode);
     } else {
       insertDplhAfterTo(info.dplh, info.targetNode.parent);
     }
   },
   append: function append(info) {
     if (isNodeDroppable(info.targetNode)) {
-      th.appendTo(info.dplh, info.targetNode);
+      appendTo(info.dplh, info.targetNode);
       if (!info.targetNode.open) info.store.toggleOpen(info.targetNode);
     } else {
       insertDplhAfterTo(info.dplh, info.targetNode);
@@ -670,7 +1121,7 @@ function isParent(child, parent) {
   },
   prepend: function prepend(info) {
     if (isNodeDroppable(info.targetNode)) {
-      th.prependTo(info.dplh, info.targetNode);
+      prependTo(info.dplh, info.targetNode);
       if (!info.targetNode.open) info.store.toggleOpen(info.targetNode);
     } else {
       insertDplhAfterTo(info.dplh, info.targetNode);
@@ -682,7 +1133,7 @@ function isParent(child, parent) {
   // append to prev sibling
   'append prev': function appendPrev(info) {
     if (isNodeDroppable(info.targetPrev)) {
-      th.appendTo(info.dplh, info.targetPrev);
+      appendTo(info.dplh, info.targetPrev);
       if (!info.targetPrev.open) info.store.toggleOpen(info.targetPrev);
     } else {
       insertDplhAfterTo(info.dplh, info.targetPrev);
@@ -691,7 +1142,7 @@ function isParent(child, parent) {
   // append to current tree
   'append current tree': function appendCurrentTree(info) {
     if (isNodeDroppable(info.currentTree.rootData)) {
-      th.appendTo(info.dplh, info.currentTree.rootData);
+      appendTo(info.dplh, info.currentTree.rootData);
     }
   }
 };
@@ -705,7 +1156,7 @@ function insertDplhAfterTo(dplh, targetNode) {
     });
 
     if (closest) {
-      th.insertAfter(dplh, closest);
+      insertAfter(dplh, closest);
     } else {
       return false;
     }
@@ -890,7 +1341,7 @@ function autoMoveDragPlaceHolder(draggableHelperInfo) {
       return this.el.querySelector('.tree-node-inner');
     },
     offset: function offset() {
-      return hp.getOffset(this.nodeInnerEl);
+      return getOffset(this.nodeInnerEl);
     },
     // left top point
     offset2: function offset2() {
@@ -996,9 +1447,9 @@ function autoMoveDragPlaceHolder(draggableHelperInfo) {
           break;
         }
 
-        var t = hp.binarySearch(children, function (node) {
+        var t = binarySearch(children, function (node) {
           var el = document.getElementById(node._id);
-          var ty = hp.getOffset(el).y;
+          var ty = getOffset(el).y;
           var ty2 = ty + el.offsetHeight + currentTree.space;
 
           if (ty2 < y) {
@@ -1047,7 +1498,7 @@ function autoMoveDragPlaceHolder(draggableHelperInfo) {
       return this.targetNodeEl.querySelector('.tree-node-inner');
     },
     tiOffset: function tiOffset() {
-      return hp.getOffset(this.tiInnerEl);
+      return getOffset(this.tiInnerEl);
     },
     tiOf4: function tiOf4() {
       return getOf4(this.tiInnerEl, this.currentTree.space);
@@ -1059,7 +1510,7 @@ function autoMoveDragPlaceHolder(draggableHelperInfo) {
     targetPrevEl: function targetPrevEl() {
       var r = this.targetNodeEl.previousSibling;
 
-      if (hp.hasClass(r, 'dragging')) {
+      if (hasClass(r, 'dragging')) {
         r = r.previousSibling;
       }
 
@@ -1339,7 +1790,7 @@ function autoMoveDragPlaceHolder(draggableHelperInfo) {
 }
 
 function getOf4(el, space) {
-  var r = hp.getOffset(el);
+  var r = getOffset(el);
   r.x2 = r.x + el.offsetWidth;
   r.y2 = r.y + el.offsetHeight + space;
   return r;
@@ -1401,7 +1852,7 @@ autoMoveDragPlaceHolder.dragEnd = function dragEnd() {
               index: siblings.indexOf(_this.data)
             };
             dplh.innerStyle.height = store.el.offsetHeight + 'px';
-            th.insertAfter(dplh, _this.data);
+            insertAfter(dplh, _this.data);
             _this.data.class += ' dragging';
           },
           moving: function moving(e, opt, store) {
@@ -1425,13 +1876,13 @@ autoMoveDragPlaceHolder.dragEnd = function dragEnd() {
             };
 
             if (_this.store.ondragend && _this.store.ondragend(_this.data, draggableHelperInfo) === false) {
-              hp.arrayRemove(dplh.parent.children, dplh); // can't drop, no change
+              arrayRemove(dplh.parent.children, dplh); // can't drop, no change
             } else {
               var targetTree = dplh._vm.store;
               var crossTree = targetTree !== _this.store;
               var oldTree = crossTree ? _this.store : null;
-              th.insertAfter(_this.data, dplh);
-              hp.arrayRemove(dplh.parent.children, dplh);
+              insertAfter(_this.data, dplh);
+              arrayRemove(dplh.parent.children, dplh);
               _this.data.class = _this.data.class.replace(/(^| )dragging( |$)/g, ' ');
               targetTree.$emit('drop', _this.data, targetTree, oldTree);
               oldTree && oldTree.$emit('drop', _this.data, targetTree, oldTree); // emit change event if changed
@@ -1471,7 +1922,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-11437b90";
+var __vue_module_identifier__$1 = "data-v-e87bd76e";
 /* functional template */
 
 var __vue_is_functional_template__$1 = undefined;
@@ -1542,7 +1993,7 @@ var script$2 = {
           _id: "tree_".concat(this._uid, "_node_root"),
           children: []
         };
-        th.breadthFirstSearch(data, function (node, k, parent) {
+        breadthFirstSearch(data, function (node, k, parent) {
           _this.completeNode(node, parent);
         });
         this.rootData.children = data;
@@ -1572,7 +2023,7 @@ var script$2 = {
       this.$set(node, 'parent', parent || this.rootData);
 
       if (!node.hasOwnProperty('_id')) {
-        node._id = "tree_".concat(this._uid, "_node_").concat(hp.randString(this.idLength));
+        node._id = "tree_".concat(this._uid, "_node_").concat(randString(this.idLength));
       }
 
       node._treeNodePropertiesCompleted = true;
@@ -1617,7 +2068,7 @@ var script$2 = {
     },
     getNodeById: function getNodeById(id) {
       var r;
-      th.breadthFirstSearch(this.rootData.children, function (node) {
+      breadthFirstSearch(this.rootData.children, function (node) {
         if (node._id === id) {
           r = node;
           return false;
@@ -1627,7 +2078,7 @@ var script$2 = {
     },
     getActivated: function getActivated() {
       var r = [];
-      th.breadthFirstSearch(this.rootData.children, function (node) {
+      breadthFirstSearch(this.rootData.children, function (node) {
         if (node.active) {
           r.push(node);
         }
@@ -1636,7 +2087,7 @@ var script$2 = {
     },
     getOpened: function getOpened() {
       var r = [];
-      th.breadthFirstSearch(this.rootData.children, function (node) {
+      breadthFirstSearch(this.rootData.children, function (node) {
         if (node.open) {
           r.push(node);
         }
@@ -1685,7 +2136,7 @@ var script$2 = {
       return this.pure(this.rootData, true, after).children;
     },
     deleteNode: function deleteNode(node) {
-      return hp.arrayRemove(node.parent.children, node);
+      return arrayRemove(node.parent.children, node);
     },
     addNode: function addNode(node, newNodeData) {
       return node.children.push(newNodeData);
@@ -1749,7 +2200,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-1f58a63c";
+var __vue_module_identifier__$2 = "data-v-78a7e2ae";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
@@ -1810,7 +2261,7 @@ var script$3 = {
     trees.push(this);
   },
   beforeDestroy: function beforeDestroy() {
-    hp.arrayRemove(trees, this);
+    arrayRemove(trees, this);
   }
 };/* script */
 var __vue_script__$3 = script$3;
@@ -1824,7 +2275,7 @@ var __vue_inject_styles__$3 = undefined;
 var __vue_scope_id__$3 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$3 = "data-v-3e82bc32";
+var __vue_module_identifier__$3 = "data-v-c1356f44";
 /* functional template */
 
 var __vue_is_functional_template__$3 = undefined;
@@ -1834,7 +2285,7 @@ var __vue_is_functional_template__$3 = undefined;
 
 /* style inject shadow dom */
 
-var __vue_component__$3 = /*#__PURE__*/normalizeComponent({}, __vue_inject_styles__$3, __vue_script__$3, __vue_scope_id__$3, __vue_is_functional_template__$3, __vue_module_identifier__$3, false, undefined, undefined, undefined);var components=/*#__PURE__*/Object.freeze({__proto__:null,DraggableTree: __vue_component__$3});var install = function installVueNestedDraggable(Vue) {
+var __vue_component__$3 = /*#__PURE__*/normalizeComponent({}, __vue_inject_styles__$3, __vue_script__$3, __vue_scope_id__$3, __vue_is_functional_template__$3, __vue_module_identifier__$3, false, undefined, undefined, undefined);var components=/*#__PURE__*/Object.freeze({__proto__:null,DraggableTree: __vue_component__$3,depthFirstSearch: depthFirstSearch});var install = function installVueNestedDraggable(Vue) {
   if (install.installed) return;
   install.installed = true;
   Object.entries(components).forEach(function (_ref) {
@@ -1867,4 +2318,4 @@ var plugin = {
     GlobalVue.use(plugin);
   }
 } // Default export is library as a whole, registered via Vue.use()
-exports.DraggableTree=__vue_component__$3;exports.default=plugin;
+exports.DraggableTree=__vue_component__$3;exports.default=plugin;exports.depthFirstSearch=depthFirstSearch;

@@ -1,5 +1,5 @@
 <script>
-import * as hp from 'helper-js'
+import { arrayRemove } from '@/plugins/utils'
 import DraggableTreeNode from './DraggableTreeNode.vue'
 import Tree from './Tree.vue'
 
@@ -41,7 +41,7 @@ export default {
     trees.push(this)
   },
   beforeDestroy() {
-    hp.arrayRemove(trees, this)
+    arrayRemove(trees, this)
   },
 }
 </script>

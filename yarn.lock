@@ -4581,13 +4581,6 @@ helper-js@^1.2.0, helper-js@^1.3.7:
   dependencies:
     "@babel/runtime" "^7.7.7"
 
-helper-js@^2.0.0, helper-js@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/helper-js/-/helper-js-2.0.1.tgz#648a6c6e444d3c071f07db9eaa01eb3ca50a317b"
-  integrity sha512-8naDhtjmYUyedxAZNTjx7LuyiiNWnyYCGgkkv3Tox38IBcdfb+7sGxqshxCk3dNiBPwfDp33b25anPh9ZY0Wbw==
-  dependencies:
-    "@babel/runtime" "^7.7.7"
-
 hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
@@ -8546,11 +8539,6 @@ tough-cookie@~2.5.0:
     psl "^1.1.28"
     punycode "^2.1.1"
 
-tree-helper@^1.4.14:
-  version "1.4.14"
-  resolved "https://registry.yarnpkg.com/tree-helper/-/tree-helper-1.4.14.tgz#522505d53860232558fb8508451c39d6033f24ef"
-  integrity sha512-3OC6Nf1pH8yJNLtJv4nFPTmFz8ZBPWWXWbwGgySpwhb9D9xS6Ats99PdGtqxls9IJ0LHuqmxqb8xGnV7htGjqg==
-
 trim-repeated@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/trim-repeated/-/trim-repeated-1.0.0.tgz#e3646a2ea4e891312bf7eace6cfb05380bc01c21"
@@ -8885,14 +8873,6 @@ vue-eslint-parser@^7.0.0:
     espree "^6.2.1"
     esquery "^1.0.1"
     lodash "^4.17.15"
-
-vue-functions@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/vue-functions/-/vue-functions-2.0.6.tgz#8dd83d4f60699715f323d7119e10a197b2e63882"
-  integrity sha512-c5P62HgQHJe7tIyWQUJGKeK3ziI+cOc3tf/NnwaSGnli89msfyDN0QUFIT9Su7uMcQmf0oMj2PmSh8M4zISxzg==
-  dependencies:
-    "@babel/runtime" "^7.7.7"
-    helper-js "^2.0.0"
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"

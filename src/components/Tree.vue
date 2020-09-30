@@ -28,8 +28,7 @@
 </template>
 
 <script>
-import * as hp from 'helper-js'
-import * as th from 'tree-helper'
+import { arrayRemove, randString, breadthFirstSearch } from '@/plugins/utils'
 import TreeNode from './TreeNode.vue'
 
 export default {
@@ -66,7 +65,7 @@ export default {
           _id: `tree_${this._uid}_node_root`,
           children: [],
         }
-        th.breadthFirstSearch(data, (node, k, parent) => {
+        breadthFirstSearch(data, (node, k, parent) => {
           this.completeNode(node, parent)
         })
         this.rootData.children = data
@@ -93,7 +92,7 @@ export default {
       }
       this.$set(node, 'parent', parent || this.rootData)
       if (!node.hasOwnProperty('_id')) {
-        node._id = `tree_${this._uid}_node_${hp.randString(this.idLength)}`
+        node._id = `tree_${this._uid}_node_${randString(this.idLength)}`
       }
       node._treeNodePropertiesCompleted = true
     },
@@ -129,7 +128,7 @@ export default {
     },
     getNodeById(id) {
       let r
-      th.breadthFirstSearch(this.rootData.children, node => {
+      breadthFirstSearch(this.rootData.children, node => {
         if (node._id === id) {
           r = node
           return false
@@ -139,7 +138,7 @@ export default {
     },
     getActivated() {
       const r = []
-      th.breadthFirstSearch(this.rootData.children, node => {
+      breadthFirstSearch(this.rootData.children, node => {
         if (node.active) {
           r.push(node)
         }
@@ -148,7 +147,7 @@ export default {
     },
     getOpened() {
       const r = []
-      th.breadthFirstSearch(this.rootData.children, node => {
+      breadthFirstSearch(this.rootData.children, node => {
         if (node.open) {
           r.push(node)
         }
@@ -192,7 +191,7 @@ export default {
       return this.pure(this.rootData, true, after).children
     },
     deleteNode(node) {
-      return hp.arrayRemove(node.parent.children, node)
+      return arrayRemove(node.parent.children, node)
     },
     addNode(node, newNodeData) {
       return node.children.push(newNodeData)

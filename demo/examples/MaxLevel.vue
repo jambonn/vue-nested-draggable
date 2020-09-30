@@ -26,7 +26,7 @@
 
 <script>
 import Tree from '@/components/DraggableTree'
-import * as th from 'tree-helper'
+import { depthFirstSearch } from '@/plugins/utils'
 
 export default {
   components: { Tree },
@@ -64,7 +64,7 @@ export default {
     ondrag(node) {
       const { maxLevel } = this
       let nodeLevels = 1
-      th.depthFirstSearch(node, childNode => {
+      depthFirstSearch(node, childNode => {
         if (childNode._vm.level > nodeLevels) {
           nodeLevels = childNode._vm.level
         }
@@ -72,7 +72,7 @@ export default {
       nodeLevels = nodeLevels - node._vm.level + 1
       const childNodeMaxLevel = maxLevel - nodeLevels
       //
-      th.depthFirstSearch(this.originalData, childNode => {
+      depthFirstSearch(this.originalData, childNode => {
         if (childNode === node) {
           return 'skip children'
         }

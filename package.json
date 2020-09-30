@@ -1,6 +1,6 @@
 {
   "name": "@jambonn/vue-nested-draggable",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vue draggable tree view component",
   "keywords": [
     "vue",
@@ -36,9 +36,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "draggable-helper": "1.0.20",
-    "helper-js": "^2.0.1",
-    "tree-helper": "^1.4.14"
+    "draggable-helper": "1.0.20"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

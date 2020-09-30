@@ -1,7 +1,6 @@
 <script>
-import * as hp from 'helper-js'
-import * as th from 'tree-helper'
 import draggableHelper from 'draggable-helper'
+import { arrayRemove, insertAfter } from '@/plugins/utils'
 import TreeNode from './TreeNode.vue'
 import autoMoveDragPlaceHolder, {
   isNodeDraggable,
@@ -52,7 +51,7 @@ export default {
                 index: siblings.indexOf(this.data),
               }
               dplh.innerStyle.height = store.el.offsetHeight + 'px'
-              th.insertAfter(dplh, this.data)
+              insertAfter(dplh, this.data)
               this.data.class += ' dragging'
             },
             moving: (e, opt, store) => {
@@ -69,14 +68,14 @@ export default {
                 this.store.ondragend &&
                 this.store.ondragend(this.data, draggableHelperInfo) === false
               ) {
-                hp.arrayRemove(dplh.parent.children, dplh)
+                arrayRemove(dplh.parent.children, dplh)
                 // can't drop, no change
               } else {
                 const targetTree = dplh._vm.store
                 const crossTree = targetTree !== this.store
                 const oldTree = crossTree ? this.store : null
-                th.insertAfter(this.data, dplh)
-                hp.arrayRemove(dplh.parent.children, dplh)
+                insertAfter(this.data, dplh)
+                arrayRemove(dplh.parent.children, dplh)
                 this.data.class = this.data.class.replace(
                   /(^| )dragging( |$)/g,
                   ' ',
